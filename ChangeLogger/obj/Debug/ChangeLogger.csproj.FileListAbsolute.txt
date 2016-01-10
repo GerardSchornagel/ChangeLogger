@@ -4,3 +4,5 @@ C:\Users\Gerard\Dropbox\cSharp\ChangeLogger\ChangeLogger\bin\Debug\ChangeLogger.
 C:\Users\Gerard\Dropbox\cSharp\ChangeLogger\ChangeLogger\obj\Debug\ChangeLogger.csprojResolveAssemblyReference.cache
 C:\Users\Gerard\Dropbox\cSharp\ChangeLogger\ChangeLogger\obj\Debug\ChangeLogger.exe
 C:\Users\Gerard\Dropbox\cSharp\ChangeLogger\ChangeLogger\obj\Debug\ChangeLogger.pdb
+C:\Users\Gerard\Dropbox\cSharp\ChangeLogger\ChangeLogger\obj\Debug\ChangeLogger.MainForm.resources
+C:\Users\Gerard\Dropbox\cSharp\ChangeLogger\ChangeLogger\obj\Debug\ChangeLogger.csproj.GenerateResource.Cache
