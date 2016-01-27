@@ -379,5 +379,7 @@
 			this.PerformLayout();
 
 		}
+	
+	   
 	}
 }
