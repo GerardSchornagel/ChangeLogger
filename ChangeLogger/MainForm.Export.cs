@@ -1,5 +1,7 @@
 ﻿using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Windows.Forms;
+
 namespace ChangeLogger
 {
     partial class MainForm
@@ -7,42 +9,42 @@ namespace ChangeLogger
         /// <summary>
         /// Export to txt file's.
         /// </summary>
-        void ExportConversion(int OutputDegree, string OK, string Cancel)
+        void ExportConversion(System.Windows.Forms.DialogResult MessageboxResult, string OK, string Cancel)
         {
-            StringSolution = ToolstripButtonListSolution.Text;
-            StringProgram = ToolstripButtonListProgram.Text;
-            StringOutput = null;
+            stringSolution = ToolstripButtonListSolution.Text;
+            stringProgram = ToolstripButtonListProgram.Text;
+            stringOutput = null;
                                 
-            using (System.IO.StreamWriter writer = System.IO.File.CreateText(stringDirectoryCurrent + "\\Database\\" + StringSolution + "\\" + StringProgram + "." + OutputDegree + ".txt")) {
+            using (System.IO.StreamWriter writer = System.IO.File.CreateText(stringDirectoryProgramDatabase + stringSolution + "\\" + stringProgram + "." + stringResult + ".txt")) {
                 //start header of file
-                writer.WriteLine(StringSolution.ToUpper() + " - " + StringProgram);
+                writer.WriteLine(stringSolution.ToUpper() + " - " + stringProgram);
                 writer.WriteLine();
         
                 //get array of versions in program
                 try {
-                    ArrayProgram = System.IO.Directory.GetDirectories(stringDirectoryCurrent + "\\Database\\" + StringSolution + "\\" + StringProgram, "*", System.IO.SearchOption.TopDirectoryOnly);
+                    arrayProgram = System.IO.Directory.GetDirectories(stringDirectoryProgramDatabase + stringSolution + "\\" + stringProgram, "*", System.IO.SearchOption.TopDirectoryOnly);
                 } catch (System.Exception e) {
                 }
                            
                 //Counting leading trails to remove
                 intCharacterLength = 0;
-                foreach (int number in stringDirectoryCurrent + "\\Database\\" + StringSolution + "\\" + StringProgram + "\\") {
+                foreach (int number in stringDirectoryProgramDatabase + stringSolution + "\\" + stringProgram + "\\") {
                     intCharacterLength = intCharacterLength + 1;
                 }
         
                 //each version>get files
-                string stringLine;
-                foreach (string line in ArrayProgram) {
+                foreach (string line in arrayProgram) {
                     stringLine = line.Remove(0, intCharacterLength);
                     try {
-                        ArrayVersion = System.IO.Directory.GetFiles(stringDirectoryCurrent + "\\Database\\" + StringSolution + "\\" + StringProgram + "\\" + stringLine, "*", System.IO.SearchOption.TopDirectoryOnly);
+                        arrayVersion = System.IO.Directory.GetFiles(stringDirectoryProgramDatabase + stringSolution + "\\" + stringProgram + "\\" + stringLine, "*", System.IO.SearchOption.TopDirectoryOnly);
                     } catch (System.Exception e) {
                     }
         
                     //Version Number
                     writer.WriteLine("[" + line + "]");
-                    foreach (string file in ArrayVersion) {
-                        if (OutputDegree == 6) { //Full
+                    foreach (string file in arrayVersion) {
+                        if (MessageboxResult == DialogResult.Yes) { //Full
+                            stringResult = "Full";
                             using (System.Xml.XmlReader reader = System.Xml.XmlReader.Create(file)) {
                                 //Load XML-Files intro program-controls
                                 if (reader.IsStartElement("Information")) {
@@ -83,7 +85,8 @@ namespace ChangeLogger
                                 }
                             }
                             writer.WriteLine();
-                        } else { // Normal
+                        } else if (MessageboxResult == DialogResult.No) { // Normal
+                            stringResult = "Normal";
                             using (System.Xml.XmlReader reader = System.Xml.XmlReader.Create(file)) {
                                 //Load XML-Files intro program-controls
                                 if (reader.IsStartElement("Information")) {
@@ -101,12 +104,13 @@ namespace ChangeLogger
                                     writer.WriteLine("- " + reader.ReadString());
                                 }
                             }
+                        } else {
+                            MessageBox.Show("There was no result returned, please try again and use Yes and No.", "No return value", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                     writer.WriteLine();
                 }
-                string StringShell = stringDirectoryCurrent + "\\Database\\" + StringSolution + "\\" + StringProgram + "." + OutputDegree + ".txt";
-                System.Diagnostics.Process.Start("notepad.exe", StringShell);
+                stringShell = stringDirectoryProgramDatabase + stringSolution + "\\" + stringProgram + "." + stringResult + ".txt";
             }
         }
     }

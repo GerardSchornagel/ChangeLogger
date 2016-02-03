@@ -138,7 +138,7 @@
 			this.PanelDetails.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.PanelDetails.Location = new System.Drawing.Point(0, 0);
 			this.PanelDetails.Name = "PanelDetails";
-			this.PanelDetails.Size = new System.Drawing.Size((this.ClientSize.Width / 3) * 2, this.ClientSize.Height);
+			this.PanelDetails.Size = new System.Drawing.Size((this.ClientSize.Width / 5) * 3, this.ClientSize.Height);
 			this.Controls.Add(this.PanelDetails);
 			//
 			// ToolstripDetails
@@ -190,6 +190,7 @@
             this.TextboxDetailsMonth.Location = new System.Drawing.Point(LabelDetailsMonth.Location.X, LabelDetailsMonth.Location.Y + LabelDetailsMonth.Height + 1);
             this.TextboxDetailsMonth.Name = "TextboxDetailsMonth";
             this.TextboxDetailsMonth.Size = new System.Drawing.Size((PanelDetails.ClientSize.Width - 15) / 4, 24);
+            this.TextboxDetailsMonth.LostFocus += new System.EventHandler(TextboxDetailsMonth_LostFocus);
             this.PanelDetails.Controls.Add(this.TextboxDetailsMonth);
             // LabelDetailsDay
             this.LabelDetailsDay.AutoSize = true;
@@ -201,6 +202,7 @@
             this.TextboxDetailsDay.Location = new System.Drawing.Point(LabelDetailsDay.Location.X, LabelDetailsDay.Location.Y + LabelDetailsDay.Height + 1);
             this.TextboxDetailsDay.Name = "TextboxDetailsDay";
             this.TextboxDetailsDay.Size = new System.Drawing.Size((PanelDetails.ClientSize.Width - 15) / 4, 24);
+            this.TextboxDetailsDay.LostFocus += new System.EventHandler(TextboxDetailsDay_LostFocus);
             this.PanelDetails.Controls.Add(this.TextboxDetailsDay);  
             // LabelDetailsTime
             this.LabelDetailsTime.AutoSize = true;
@@ -314,7 +316,7 @@
             PanelList.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             PanelList.Location = new System.Drawing.Point(PanelDetails.Width, 0);
             PanelList.Name = "PanelList";
-            PanelList.Size = new System.Drawing.Size(this.ClientSize.Width / 3, this.ClientSize.Height);
+            PanelList.Size = new System.Drawing.Size((this.ClientSize.Width / 5) * 2, this.ClientSize.Height);
             this.Controls.Add(this.PanelList);
             // ToolstripList
             ToolstripList.AutoSize = false;

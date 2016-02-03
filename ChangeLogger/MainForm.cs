@@ -14,14 +14,8 @@ namespace ChangeLogger
     {
         public MainForm()
         {
-            //
-            // The InitializeComponent() call is required for Windows Forms designer support.
-            //
             InitializeComponent();
-			
-            //
-            // TODO: Add constructor code after the InitializeComponent() call.
-            //
+
             Writer("Startup", null);
             Reader("Load", "Root");
         }
@@ -31,7 +25,7 @@ namespace ChangeLogger
             this.SuspendLayout();
             // PanelDetails
             PanelDetails.Location = new System.Drawing.Point(0, 0);
-            PanelDetails.Size = new System.Drawing.Size((this.ClientSize.Width / 3) * 2, this.ClientSize.Height);
+            PanelDetails.Size = new System.Drawing.Size((this.ClientSize.Width / 5) * 3, this.ClientSize.Height);
             ToolstripDetails.Location = new System.Drawing.Point(0, 0);
             ToolstripDetails.Size = new System.Drawing.Size(PanelDetails.ClientSize.Width, 24);
             LabelDetailsYear.Location = new System.Drawing.Point(3, ToolstripDetails.Height + 3);
@@ -73,45 +67,91 @@ namespace ChangeLogger
 
             // PanelList
             PanelList.Location = new System.Drawing.Point(PanelDetails.Width, 0);
-            PanelList.Size = new System.Drawing.Size(this.ClientSize.Width / 3, this.ClientSize.Height);
+            PanelList.Size = new System.Drawing.Size((this.ClientSize.Width / 5) * 2, this.ClientSize.Height);
             ToolstripList.Location = new System.Drawing.Point(0, 0);
             ToolstripList.Size = new System.Drawing.Size(PanelDetails.ClientSize.Width, 24);
             ListviewListEntries.Location = new System.Drawing.Point(3, ToolstripList.Height + 3);
             ListviewListEntries.Size = new System.Drawing.Size(PanelList.ClientSize.Width - 6, PanelList.ClientSize.Height - 30);
             this.ResumeLayout();
         }
+        
         void ToolstripButtonDetailsSave_Click(object sender, EventArgs e)
         {
             Writer("Entry", "Save");
         }
+
         void ToolstripButtonDetailsClear_Click(object sender, EventArgs e)
         {
             ClearItemFields(null, null);
         }
+
         void ToolstripButtonDetailsAutofill_Click(object sender, EventArgs e)
         {
-            TextboxDetailsDay.Text = System.Convert.ToString(System.DateTime.Now.Day);
-            TextboxDetailsMonth.Text = System.Convert.ToString(System.DateTime.Now.Month);
+            stringAutofill = System.Convert.ToString(System.DateTime.Now.Day);
+            if (stringAutofill.Length == 1) {
+                TextboxDetailsDay.Text = "0" + stringAutofill;
+            } else if (stringAutofill.Length == 2) {
+                TextboxDetailsDay.Text = stringAutofill;
+            }
+            stringAutofill = System.Convert.ToString(System.DateTime.Now.Month);
+            if (stringAutofill.Length == 1) {
+                TextboxDetailsMonth.Text = "0" + stringAutofill;
+            } else if (stringAutofill.Length == 2) {
+                TextboxDetailsMonth.Text = stringAutofill;
+            }
             TextboxDetailsYear.Text = System.Convert.ToString(System.DateTime.Now.Year);
-            TextboxDetailsTime.Text = System.Convert.ToString(System.DateTime.Now.Hour) + "." + System.Convert.ToString(System.DateTime.Now.Minute);
+            stringAutofill = System.Convert.ToString(System.DateTime.Now.Hour);
+            if (stringAutofill.Length == 1) {
+                TextboxDetailsTime.Text = "0" + stringAutofill;
+            } else if (stringAutofill.Length == 2) {
+                TextboxDetailsTime.Text = stringAutofill;
+            }
+            stringAutofill = System.Convert.ToString(System.DateTime.Now.Minute);
+            if (stringAutofill.Length == 1) {
+                stringAutofill = TextboxDetailsTime.Text + ".0" + stringAutofill; 
+                TextboxDetailsTime.Text = stringAutofill;
+            } else if (stringAutofill.Length == 2) {
+                TextboxDetailsTime.Text += "." + stringAutofill;
+            }
         }
+        
+        void TextboxDetailsDay_LostFocus(object sender, EventArgs e)
+        {
+            stringAutofill = TextboxDetailsDay.Text;
+            if (stringAutofill.Length == 1) {
+                TextboxDetailsDay.Text = "0" + stringAutofill;
+            } else if (stringAutofill.Length == 2) {
+                TextboxDetailsDay.Text = stringAutofill;
+            }
+        }
+        
+        void TextboxDetailsMonth_LostFocus(object sender, EventArgs e)
+        {
+            stringAutofill = TextboxDetailsMonth.Text;
+            if (stringAutofill.Length == 1) {
+                TextboxDetailsMonth.Text = "0" + stringAutofill;
+            } else if (stringAutofill.Length == 2) {
+                TextboxDetailsMonth.Text = stringAutofill;
+            }
+        }
+
         void TextboxDetailsTime_LostFocus(object sender, EventArgs e)
         {
             var tb = sender as System.Windows.Forms.TextBox;
-            if (tb.TextLength == 4) {
+            if (tb.TextLength == 4) { //If only 4 characters, split and add a delimiter.
                 string t1;
                 string t2;
                 t1 = tb.Text.Remove(2);
                 t2 = tb.Text.Remove(0, 2);
                 tb.Text = t1 + "." + t2;
-            } else if (tb.TextLength == 5) {
+            } else if (tb.TextLength == 5) { //If 5 characters, replace delimiter by split, remove & add.
                 string t1;
                 string t2;
                 t1 = tb.Text.Remove(2);
                 t2 = tb.Text.Remove(0, 3);
                 tb.Text = t1 + "." + t2;
-            } else {
-                MessageBox.Show("Not a valid format, full digits required. Separator can be any char (ie. '.' '-' 'a' ' ' or even nothing).", "Time", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            } else { //Give warning for wrong quantity of characters (doesn't check for correct 24h time-use).
+                MessageBox.Show("Not a valid format, full digits required. Separator can be any char (ie. '.' '-' 'a' ' ' or even nothing). /r/nie. 08:05 or 0715", "Time", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             sender = tb;
         }
@@ -124,8 +164,9 @@ namespace ChangeLogger
         void ToolstripButtonListSolution_Click(object sender, EventArgs e)
         {
             var tsb = sender as ToolStripButton;
-            if (tsb.Text != null) {
-                if (tsb.Text == "..") {
+            if (tsb.Text != null) { //If empty or root, skip. Else open solution.
+                if (tsb.Text == "...") {
+                    MessageBox.Show("Please use the add entry button for adding Solutions.", "Add Entry", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 } else {
                     ListviewListEntries.Items.Insert(0, "");
                     ListviewListEntries.Items[0].Selected = true;
@@ -138,67 +179,66 @@ namespace ChangeLogger
         void ToolstripButtonListProgram_Click(object sender, EventArgs e)
         {
             var tsb = sender as ToolStripButton;
-            if (tsb.Text != null) {
-                if (tsb.Text == "..") {
+            if (tsb.Text != null) { //If empty or root, skip. Else open program.
+                if (tsb.Text == "...") {
+                    MessageBox.Show("Please use the add entry button for adding Programs.", "Add Entry", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 } else {
                     ListviewListEntries.Items.Insert(0, "");
                     ListviewListEntries.Items[0].Selected = true;
                     ListviewListEntries.SelectedItems[0].SubItems[0].Text = ToolstripButtonListProgram.Text;
+                    Reader("Load", "Program");
                 }
             }
-            Reader("Load", "Program");
         }
 
         void ToolstripButtonListVersion_Click(object sender, EventArgs e)
         {
             var tsb = sender as ToolStripButton;
-            if (tsb.Text != null) {
-                if (tsb.Text == "..") {
+            if (tsb.Text != null) { //If empty or root, skip. Else open version.
+                if (tsb.Text == "...") {
+                    MessageBox.Show("Please use the add entry button for adding Versions.", "Add Entry", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 } else {
                     ListviewListEntries.Items.Insert(0, "");
                     ListviewListEntries.Items[0].Selected = true;
                     ListviewListEntries.SelectedItems[0].SubItems[0].Text = ToolstripButtonListVersion.Text;
+                    Reader("Load", "Version");
                 }
             }
-            Reader("Load", "Version");
         }
 
         void ToolstripButtonListEntryAdd_Click(object sender, EventArgs e)
         {
             if (stringBrowsingLevel == "Solution") {
-                stringDirectoryCurrent = System.IO.Directory.GetCurrentDirectory();
-                stringDirectoryCurrent += "\\Database\\";
-                InputboxResult = Inputbox.Show("New Solution name:", "Solution Name", "New");
-                if (InputboxResult.OK) {
-                    stringDirectoryCurrent += InputboxResult.Text;
+                stringDirectoryCurrent = stringDirectoryProgramDatabase;
+                inputboxResult = Inputbox.Show("New Solution name:", "Solution Name", "New");
+                if (inputboxResult.OK) {
+                    stringDirectoryCurrent += inputboxResult.Text;
                     System.IO.Directory.CreateDirectory(stringDirectoryCurrent);
                     ToolstripButtonListRoot_Click(null, null);
                 } else {
                     MessageBox.Show("Cancelled", "Create Solution", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             } else if (stringBrowsingLevel == "Program") {
-                stringDirectoryCurrent = System.IO.Directory.GetCurrentDirectory();
-                stringDirectoryCurrent += "\\Database\\";
-                InputboxResult = Inputbox.Show("New Program name:", "Program Name", "New");
-                if (InputboxResult.OK) {
+                stringDirectoryCurrent = stringDirectoryProgramDatabase;
+                inputboxResult = Inputbox.Show("New Program name:", "Program Name", "New");
+                if (inputboxResult.OK) {
                     stringDirectoryCurrent += ToolstripButtonListSolution.Text;
                     stringDirectoryCurrent += "\\";
-                    stringDirectoryCurrent += InputboxResult.Text;
+                    stringDirectoryCurrent += inputboxResult.Text;
                     ToolstripButtonListSolution_Click(null, null);
                     System.IO.Directory.CreateDirectory(stringDirectoryCurrent);
                 } else {
                     MessageBox.Show("Cancelled", "Create Program", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }            
             } else if (stringBrowsingLevel == "Version") {
-                stringDirectoryCurrent = System.IO.Directory.GetCurrentDirectory();
-                stringDirectoryCurrent += "\\Database\\";
-                InputboxResult = Inputbox.Show("New Version:", "Version", "1.0.0.0");
-                if (InputboxResult.OK) {
+                stringDirectoryCurrent = stringDirectoryProgramDatabase;
+                inputboxResult = Inputbox.Show("New Version:", "Version", "1.0.0.0");
+                if (inputboxResult.OK) {
                     stringDirectoryCurrent += ToolstripButtonListSolution.Text;
                     stringDirectoryCurrent += "\\";
                     stringDirectoryCurrent += ToolstripButtonListProgram.Text;
                     stringDirectoryCurrent += "\\";
-                    stringDirectoryCurrent += InputboxResult.Text;
+                    stringDirectoryCurrent += inputboxResult.Text;
                     ToolstripButtonListProgram_Click(null, null);
                     System.IO.Directory.CreateDirectory(stringDirectoryCurrent);
                 } else {
@@ -211,11 +251,15 @@ namespace ChangeLogger
 
         void ToolstripButtonListExport_Click(object sender, EventArgs e)
         {
-            DialogResult messageboxResult = MessageBox.Show("Text-file will be generated containing all changes from the Program./n/rPress YES for a FULL output./n/rPress NO for NORMAL output.", "Output Full or Normal?", MessageBoxButtons.YesNo, MessageBoxIcon.None);
-            if (messageboxResult == DialogResult.Yes) {
-                ExportConversion(6, null, null); //Full
-            } else if (messageboxResult == DialogResult.No) {
-                ExportConversion(5, null, null); //Normal
+            if (stringBrowsingLevel == "Version") {
+                messageboxResult = MessageBox.Show("Text-file will be generated containing all changes from the Program.\n\rPress YES for a FULL output.\n\rPress NO for NORMAL output.", "Output Full or Normal?", MessageBoxButtons.YesNo, MessageBoxIcon.None);
+                if (messageboxResult == DialogResult.Yes) {
+                    ExportConversion(messageboxResult, null, null); //Full
+                } else if (messageboxResult == DialogResult.No) {
+                    ExportConversion(messageboxResult, null, null); //Normal
+                } else {
+                    MessageBox.Show("Please load a program-entry first.", "Invalid choice", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
         }
 

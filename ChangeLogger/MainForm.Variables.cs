@@ -6,18 +6,24 @@
         /// Variables used in program.
         /// </summary>
         
-        string[] arrayReader;
         string stringBrowsingLevel = "Root";
-        string stringDirectoryCurrent = System.IO.Directory.GetCurrentDirectory() + "\\Database\\";
+        string stringDirectoryCurrent;
+        string stringDirectoryProgramDatabase = System.IO.Directory.GetCurrentDirectory() + "\\Database\\";
         string stringFileCurrent;
+        string stringSolution;
+        string stringProgram;
+        string stringOutput;
+        string stringLine;
+        string stringShell;
+        string stringResult;
+        string stringReadFile;
+        string stringAutofill;
+        string[] arrayReader;
+        string[] arrayProgram;
+        string[] arrayVersion;
         int intCharacterLength;
         int messageboxAnswer;
-        string StringSolution;
-        string StringProgram;
-        string StringOutput;
-        string[] ArrayProgram;
-        string[] ArrayVersion;
-        InputboxSample.Inputbox.InputboxResult InputboxResult;
+        InputboxSample.Inputbox.InputboxResult inputboxResult;
         System.Windows.Forms.DialogResult messageboxResult;
 
     }

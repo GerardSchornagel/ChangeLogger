@@ -14,12 +14,10 @@ namespace ChangeLogger
         void Writer(string Command, string Addition)
         {
             if (Command == "Startup") { //Check for initial directory(s).
-                string directoryStartup;
-                directoryStartup = System.IO.Directory.GetCurrentDirectory();
-                directoryStartup += "\\Database\\";
-                if (System.IO.Directory.Exists(directoryStartup) == false) {
-                    System.IO.Directory.CreateDirectory(directoryStartup);
+                if (System.IO.Directory.Exists(stringDirectoryProgramDatabase) == false) {
+                    System.IO.Directory.CreateDirectory(stringDirectoryProgramDatabase);
                 }
+
             } else if (Command == "Remove") { //Removes the physical from the HD.
                 // msgbox then delete stringFileCurrent+"day".xml
                 try {
@@ -27,7 +25,7 @@ namespace ChangeLogger
                 } catch (System.Exception e) {
                     MessageBox.Show("You have to load the entry to mark it for remove.");
                 }
-                if (messageboxResult == DialogResult.Yes) { //Yes.
+                if (messageboxResult == DialogResult.Yes) {
                     //Delete directory
                     try {
                         System.IO.File.Delete(stringFileCurrent + "\\" + TextboxDetailsMonth.Text + "-" + TextboxDetailsDay.Text + "_" + TextboxDetailsTime.Text + "_" + TextboxDetailsAuthor.Text + ".xml");
@@ -35,8 +33,7 @@ namespace ChangeLogger
                     }
                 }
             } else if (Command == "Entry") {
-                stringFileCurrent = System.IO.Directory.GetCurrentDirectory();
-                stringFileCurrent += "\\Database\\";
+                stringFileCurrent = stringDirectoryProgramDatabase;
                 stringFileCurrent += ToolstripButtonListSolution.Text;
                 stringFileCurrent += "\\";
                 stringFileCurrent += ToolstripButtonListProgram.Text;

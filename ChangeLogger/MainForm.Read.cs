@@ -22,12 +22,12 @@
                     ListviewListEntries.Columns[0].Width = -2;
         
                     try {
-                        arrayReader = System.IO.Directory.GetDirectories(stringDirectoryCurrent, "*", System.IO.SearchOption.TopDirectoryOnly);
+                        arrayReader = System.IO.Directory.GetDirectories(stringDirectoryProgramDatabase, "*", System.IO.SearchOption.TopDirectoryOnly);
                     } catch (System.Exception e) {
                     }
                     
                     intCharacterLength = 0;
-                    foreach (int number in stringDirectoryCurrent) {
+                    foreach (int number in stringDirectoryProgramDatabase) {
                         intCharacterLength = intCharacterLength + 1;   
                     }
                     
@@ -51,16 +51,15 @@
                     ListviewListEntries.Columns[0].Width = -2;
                     
                     try {
-                        arrayReader = System.IO.Directory.GetDirectories(stringDirectoryCurrent + "\\Database\\" + ToolstripButtonListSolution.Text + "\\", "*", System.IO.SearchOption.TopDirectoryOnly);
+                        arrayReader = System.IO.Directory.GetDirectories(stringDirectoryProgramDatabase + ToolstripButtonListSolution.Text + "\\", "*", System.IO.SearchOption.TopDirectoryOnly);
                     } catch (System.Exception e) {
                         
                     }
                                     
                     intCharacterLength = 0;
-                    foreach (int number in stringDirectoryCurrent + "\\Database\\" + ToolstripButtonListSolution.Text + "\\") {
+                    foreach (int number in stringDirectoryProgramDatabase + ToolstripButtonListSolution.Text + "\\") {
                         intCharacterLength = intCharacterLength + 1;
                     }
-                    string stringLine;
                     foreach (string line in arrayReader) {
                         stringLine = line.Remove(0, intCharacterLength);
                         ListviewListEntries.Items.Add(stringLine);
@@ -78,16 +77,15 @@
                     ListviewListEntries.Columns[0].Width = -2;
                     
                     try {
-                        arrayReader = System.IO.Directory.GetDirectories(stringDirectoryCurrent + "\\Database\\" + ToolstripButtonListSolution.Text + "\\" + ToolstripButtonListProgram.Text + "\\", "*", System.IO.SearchOption.TopDirectoryOnly);
+                        arrayReader = System.IO.Directory.GetDirectories(stringDirectoryProgramDatabase + ToolstripButtonListSolution.Text + "\\" + ToolstripButtonListProgram.Text + "\\", "*", System.IO.SearchOption.TopDirectoryOnly);
                     } catch(System.Exception e) {
                         
                     }
 
                     intCharacterLength = 0;
-                    foreach (int number in stringDirectoryCurrent + "\\Database\\" + ToolstripButtonListSolution.Text + "\\" + ToolstripButtonListProgram.Text + "\\") {
+                    foreach (int number in stringDirectoryProgramDatabase + ToolstripButtonListSolution.Text + "\\" + ToolstripButtonListProgram.Text + "\\") {
                         intCharacterLength = intCharacterLength + 1;
                     }
-                    string stringLine;
                     foreach (string line in arrayReader) {
                         stringLine = line.Remove(0, intCharacterLength);
                         ListviewListEntries.Items.Add(stringLine);
@@ -109,28 +107,31 @@
                     ListviewListEntries.Columns[0].Width = -2;
                     
                     try {
-                        arrayReader = System.IO.Directory.GetFiles(stringDirectoryCurrent + "\\Database\\" + ToolstripButtonListSolution.Text + "\\" + ToolstripButtonListProgram.Text + "\\" + ToolstripButtonListVersion.Text + "\\", "*", System.IO.SearchOption.TopDirectoryOnly);
+                        arrayReader = System.IO.Directory.GetFiles(stringDirectoryProgramDatabase + ToolstripButtonListSolution.Text + "\\" + ToolstripButtonListProgram.Text + "\\" + ToolstripButtonListVersion.Text + "\\", "*", System.IO.SearchOption.TopDirectoryOnly);
                     } catch (System.Exception e) {
                     }
                     intCharacterLength = 0;
-                    foreach (int number in stringDirectoryCurrent + "\\Database\\" + ToolstripButtonListSolution.Text + "\\" + ToolstripButtonListProgram.Text + "\\" + ToolstripButtonListVersion.Text + "\\") {
+                    foreach (int number in stringDirectoryProgramDatabase + ToolstripButtonListSolution.Text + "\\" + ToolstripButtonListProgram.Text + "\\" + ToolstripButtonListVersion.Text + "\\") {
                         intCharacterLength = intCharacterLength + 1;
                     }
-                    string stringLine;
                     foreach (string line in arrayReader) {
                         stringLine = line.Remove(0, intCharacterLength);
                         stringLine = System.Text.RegularExpressions.Regex.Split(stringLine, ".xml")[0];
                         //Load XML-Files into System.XML.Reader's
                         // Create an XML XmlReader with line.ToString
-                        using (System.Xml.XmlReader XmlReader = System.Xml.XmlReader.Create(stringDirectoryCurrent + "\\Database\\" + ToolstripButtonListSolution.Text + "\\" + ToolstripButtonListProgram.Text + "\\" + ToolstripButtonListVersion.Text + "\\" + stringLine + ".xml")) {
+                        using (System.Xml.XmlReader XmlReader = System.Xml.XmlReader.Create(stringDirectoryProgramDatabase + ToolstripButtonListSolution.Text + "\\" + ToolstripButtonListProgram.Text + "\\" + ToolstripButtonListVersion.Text + "\\" + stringLine + ".xml")) {
                             //Load XML-Files intro program-controls
                             if (XmlReader.IsStartElement("Information")) {
                                 System.Windows.Forms.ListViewItem ListviewItemBuild = new System.Windows.Forms.ListViewItem();
                                 ListviewItemBuild.SubItems.AddRange(new string[] {"0", "1", "2", "3", "4"});
                     
+                                XmlReader.ReadToFollowing("Month");
+                                stringReadFile = XmlReader.ReadString();
+                                XmlReader.ReadToFollowing("Day");
+                                stringReadFile += "-" + XmlReader.ReadString();
+                                ListviewItemBuild.SubItems[1].Text = stringReadFile;
                                 XmlReader.ReadToFollowing("ReferenceID");
                                 ListviewItemBuild.SubItems[0].Text = XmlReader.ReadString();
-                                ListviewItemBuild.SubItems[1].Text = stringLine.Remove(5);
                                 XmlReader.ReadToFollowing("Reply");
                                 ListviewItemBuild.SubItems[3].Text = XmlReader.ReadString();
                                 XmlReader.ReadToFollowing("BugID");
@@ -148,7 +149,7 @@
                     stringBrowsingLevel = "Entry";
                     
                 } else if (Addition == "Entry") {
-                    using (System.Xml.XmlReader XmlReader = System.Xml.XmlReader.Create(stringDirectoryCurrent + "\\Database\\" + ToolstripButtonListSolution.Text + "\\" + ToolstripButtonListProgram.Text + "\\" + ToolstripButtonListVersion.Text + "\\" + ListviewListEntries.SelectedItems[0].Tag + ".xml")) {
+                    using (System.Xml.XmlReader XmlReader = System.Xml.XmlReader.Create(stringDirectoryProgramDatabase + ToolstripButtonListSolution.Text + "\\" + ToolstripButtonListProgram.Text + "\\" + ToolstripButtonListVersion.Text + "\\" + ListviewListEntries.SelectedItems[0].Tag + ".xml")) {
                         //Load XML-Files intro program-controls
                         if (XmlReader.IsStartElement("Information")) {
                             XmlReader.ReadToFollowing("Year");
